@@ -97,7 +97,7 @@ app.get('/health', (req, res) => {
 
 // ─── Start Server ───────────────────────────────────────────
 app.listen(PORT, () => {
-  console.log(`\n  ⚡ Codeezy API running on http://localhost:${PORT}`);
+  console.log(`\n  ⚡ SCA API running on http://localhost:${PORT}`);
   console.log(`  📋 POST /execute  — Run code`);
   console.log(`  💚 GET  /health   — Health check\n`);
 });

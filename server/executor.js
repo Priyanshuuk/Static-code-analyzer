@@ -4,14 +4,10 @@ const path = require('path');
 const os = require('os');
 const crypto = require('crypto');
 
-// Timeout for code execution (10 seconds)
+
 const EXECUTION_TIMEOUT = 10000;
 
-/**
- * Execute code in the given language.
- * Currently uses local compilers/interpreters if available,
- * with a simulated fallback for demo purposes.
- */
+
 async function executeCode(language, code, input = '') {
   const handlers = {
     python: executePython,
@@ -27,7 +23,7 @@ async function executeCode(language, code, input = '') {
   return handler(code, input);
 }
 
-// ─── Python Executor ────────────────────────────────────────
+
 async function executePython(code, input) {
   const tmpFile = createTempFile('code.py', code);
   try {
@@ -49,7 +45,7 @@ async function executePython(code, input) {
 
 // ─── C Executor ─────────────────────────────────────────────
 async function executeC(code, input) {
-  const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'codeezy-c-'));
+  const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'SCA-c-'));
   const srcFile = path.join(tmpDir, 'code.c');
   const outFile = path.join(tmpDir, os.platform() === 'win32' ? 'code.exe' : 'code');
 
@@ -74,11 +70,11 @@ async function executeC(code, input) {
   }
 }
 
-// ─── Java Executor ──────────────────────────────────────────
-async function executeJava(code, input) {
-  const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'codeezy-java-'));
 
-  // Extract class name from code (look for "public class <Name>")
+async function executeJava(code, input) {
+  const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'SCA-java-'));
+
+
   const classMatch = code.match(/public\s+class\s+(\w+)/);
   const className = classMatch ? classMatch[1] : 'Main';
   const srcFile = path.join(tmpDir, `${className}.java`);
@@ -104,10 +100,10 @@ async function executeJava(code, input) {
   }
 }
 
-// ─── Helpers ────────────────────────────────────────────────
+
 
 function createTempFile(filename, content) {
-  const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'codeezy-'));
+  const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'SCA-'));
   const filePath = path.join(tmpDir, filename);
   fs.writeFileSync(filePath, content, 'utf-8');
   return filePath;
@@ -127,18 +123,18 @@ function cleanupDir(dirPath) {
 }
 
 function runCommand(cmd, args, input) {
-  // Extend PATH with common compiler locations on Windows
+
   const extraPaths = ['C:\\MinGW\\bin', 'C:\\mingw64\\bin', 'C:\\msys64\\mingw64\\bin'];
   const extendedPath = extraPaths.join(';') + ';' + process.env.PATH;
 
   return new Promise((resolve) => {
     const proc = execFile(cmd, args, {
       timeout: EXECUTION_TIMEOUT,
-      maxBuffer: 1024 * 1024, // 1MB output limit
+      maxBuffer: 1024 * 1024,
       env: { ...process.env, PATH: extendedPath, PYTHONIOENCODING: 'utf-8', LANG: 'en_US.UTF-8' },
     }, (error, stdout, stderr) => {
       if (error) {
-        // Timeout
+
         if (error.killed) {
           return resolve({
             output: stdout || '',
