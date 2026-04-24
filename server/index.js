@@ -84,9 +84,10 @@ app.get('/health', (req, res) => {
 });
 
 // ─── Start ──
-console.log(`\n  ⚡ SCA API running on http://localhost:${PORT}`);
-console.log(`  📋 POST /execute  — Run code`);
-console.log(`  🔍 POST /parse    — Syntax check`);
-console.log(`  💚 GET  /health   — Health check`);
-console.log(`  🌐 Languages: ${SUPPORTED_LANGUAGES.join(', ')}\n`);
+app.listen(PORT, () => {
+  console.log(`\n  ⚡ SCA API running on http://localhost:${PORT}`);
+  console.log(`  📋 POST /execute  — Run code`);
+  console.log(`  🔍 POST /parse    — Syntax check`);
+  console.log(`  💚 GET  /health   — Health check`);
+  console.log(`  🌐 Languages: ${SUPPORTED_LANGUAGES.join(', ')}\n`);
 });
