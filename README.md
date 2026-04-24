@@ -2,7 +2,7 @@
 
 SCA (formerly Codeezy) is a Competitive-Programming-Ready web platform that allows users to write, syntax-check, execute, and test code across multiple programming languages directly in their browser. It mimics the coding environments found on platforms like LeetCode and HackerRank.
 
-## 🚀 Features
+## Features
 
 - **Multi-Language Support**: Write and execute code in C, C++, Java, Python, JavaScript, TypeScript, Go, and Rust.
 - **Premium Code Editor**: Powered by Monaco Editor (the core of VS Code) for syntax highlighting, auto-completion, and a native developer experience.
@@ -13,17 +13,16 @@ SCA (formerly Codeezy) is a Competitive-Programming-Ready web platform that allo
 - **Interactive UI**: Features a resizable terminal panel, code download capability, and standard coding shortcuts.
 - **Secure Backend Engine**: Includes strict rate limiting, 10-second execution timeouts, and temporary process isolation to prevent server crashes from malicious code or infinite loops.
 
-## 🛠️ Tech Stack
+##  Tech Stack
 
 ### Frontend
-- **Framework**: React 19 + Vite
-- **Editor**: `@monaco-editor/react`
+- **Framework**: React + Vite
+
 - **Styling**: Vanilla CSS with modern UI/UX design and `lucide-react` for icons.
 
 ### Backend
 - **Environment**: Node.js
 - **Framework**: Express.js
-- **Security**: `express-rate-limit`
 - **Execution Engine**: Custom implementation using Node's `child_process` to spawn and manage native OS compilers.
 
 ## 📋 Prerequisites
@@ -73,5 +72,4 @@ The backend runs on `http://localhost:5000` and exposes the following endpoints:
 | `Ctrl + Shift + Enter` | Parse / Syntax Check Code |
 | `Ctrl + Shift + C` | Copy Terminal Output |
 
-## 🤝 Contributing
-Contributions, issues, and feature requests are welcome! Feel free to check the issues page.
+
