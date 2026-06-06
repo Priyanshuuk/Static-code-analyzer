@@ -4,27 +4,54 @@ const rateLimit = require('express-rate-limit');
 const { executeCode, parseCode } = require('./executor');
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = parseInt(process.env.PORT, 10) || 5000;
+const CORS_ORIGIN = process.env.CORS_ORIGIN || 'http://localhost:5173';
+const RATE_LIMIT_WINDOW = parseInt(process.env.RATE_LIMIT_WINDOW_MS, 10) || 60000;
+const RATE_LIMIT_MAX = parseInt(process.env.RATE_LIMIT_MAX, 10) || 30;
 
-// ─── Middleware ──────────────────────────────────────────────
-app.use(cors({ origin: '*' }));
-app.use(express.json({ limit: '1mb' }));
+// ─── Security & Parsing Middleware ──────────────────────────
+app.use(cors({
+  origin: CORS_ORIGIN === '*' ? '*' : CORS_ORIGIN.split(',').map(s => s.trim()),
+  methods: ['GET', 'POST'],
+  maxAge: 86400,
+}));
+app.use(express.json({ limit: '512kb' }));
+
+// ─── Request Logging ────────────────────────────────────────
+app.use((req, res, next) => {
+  const start = Date.now();
+  res.on('finish', () => {
+    const ms = Date.now() - start;
+    console.log(`[${new Date().toISOString()}] ${req.method} ${req.originalUrl} ${res.statusCode} ${ms}ms`);
+  });
+  next();
+});
+
+// ─── Security Headers ──────────────────────────────────────
+app.use((req, res, next) => {
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('X-Frame-Options', 'DENY');
+  res.setHeader('X-XSS-Protection', '1; mode=block');
+  res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
+  res.setHeader('Cache-Control', 'no-store');
+  next();
+});
 
 // ─── Rate Limiter ───────────────────────────────────────────
 const executeLimiter = rateLimit({
-  windowMs: 60 * 1000,
-  max: 30,
+  windowMs: RATE_LIMIT_WINDOW,
+  max: RATE_LIMIT_MAX,
   standardHeaders: true,
   legacyHeaders: false,
   validate: { xForwardedForHeader: false },
   message: {
     output: '',
-    error: 'Rate limit exceeded. Maximum 30 executions per minute.',
+    error: `Rate limit exceeded. Maximum ${RATE_LIMIT_MAX} requests per ${RATE_LIMIT_WINDOW / 1000}s.`,
     executionTime: 0,
   },
 });
 
-const SUPPORTED_LANGUAGES = ['c', 'cpp', 'python', 'java', 'javascript', 'typescript', 'go', 'rust'];
+const SUPPORTED_LANGUAGES = ['c', 'python', 'java'];
 
 // ─── Validation middleware ──────────────────────────────────
 function validateCodeRequest(req, res, next) {
@@ -84,10 +111,26 @@ app.get('/health', (req, res) => {
 });
 
 // ─── Start ──
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
   console.log(`\n  ⚡ SCA API running on http://localhost:${PORT}`);
   console.log(`  📋 POST /execute  — Run code`);
   console.log(`  🔍 POST /parse    — Syntax check`);
   console.log(`  💚 GET  /health   — Health check`);
   console.log(`  🌐 Languages: ${SUPPORTED_LANGUAGES.join(', ')}\n`);
 });
+
+// ─── Graceful Shutdown ──────────────────────────────────────
+function shutdown(signal) {
+  console.log(`\n  ⚡ Received ${signal}. Shutting down gracefully...`);
+  server.close(() => {
+    console.log('  ⚡ Server closed. Goodbye!');
+    process.exit(0);
+  });
+  setTimeout(() => {
+    console.error('  ⚡ Forced shutdown after 5s timeout.');
+    process.exit(1);
+  }, 5000);
+}
+
+process.on('SIGTERM', () => shutdown('SIGTERM'));
+process.on('SIGINT', () => shutdown('SIGINT'));

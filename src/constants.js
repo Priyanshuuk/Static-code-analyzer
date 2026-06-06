@@ -1,4 +1,3 @@
-// Default code snippets for each language — competitive programming style
 export const DEFAULT_CODE = {
   c: `#include <stdio.h>
 
@@ -12,24 +11,6 @@ int main() {
     }
     return 0;
 }`,
-
-  cpp: `#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
-
-    int t;
-    cin >> t;
-    while (t--) {
-        int n;
-        cin >> n;
-        cout << n * n << "\\n";
-    }
-    return 0;
-}`,
-
   python: `import sys
 input = sys.stdin.readline
 
@@ -40,7 +21,6 @@ def solve():
 t = int(input())
 for _ in range(t):
     solve()`,
-
   java: `import java.util.*;
 import java.io.*;
 
@@ -56,83 +36,59 @@ public class Main {
         System.out.print(sb);
     }
 }`,
-
-  javascript: `const readline = require('readline');
-const rl = readline.createInterface({ input: process.stdin });
-const lines = [];
-
-rl.on('line', (line) => lines.push(line.trim()));
-rl.on('close', () => {
-    let idx = 0;
-    const next = () => lines[idx++];
-    const t = parseInt(next());
-    for (let i = 0; i < t; i++) {
-        const n = parseInt(next());
-        console.log(n * n);
-    }
-});`,
-
-  typescript: `const readline = require('readline');
-const rl = readline.createInterface({ input: process.stdin });
-const lines: string[] = [];
-
-rl.on('line', (line: string) => lines.push(line.trim()));
-rl.on('close', () => {
-    let idx: number = 0;
-    const next = (): string => lines[idx++];
-    const t: number = parseInt(next());
-    for (let i: number = 0; i < t; i++) {
-        const n: number = parseInt(next());
-        console.log(n * n);
-    }
-});`,
-
-  go: `package main
-
-import (
-\t"bufio"
-\t"fmt"
-\t"os"
-)
-
-func main() {
-\treader := bufio.NewReader(os.Stdin)
-\twriter := bufio.NewWriter(os.Stdout)
-\tdefer writer.Flush()
-
-\tvar t int
-\tfmt.Fscan(reader, &t)
-\tfor ; t > 0; t-- {
-\t\tvar n int
-\t\tfmt.Fscan(reader, &n)
-\t\tfmt.Fprintln(writer, n*n)
-\t}
-}`,
-
-  rust: `use std::io::{self, BufRead, Write, BufWriter};
-
-fn main() {
-    let stdin = io::stdin();
-    let stdout = io::stdout();
-    let mut out = BufWriter::new(stdout.lock());
-
-    let mut lines = stdin.lock().lines();
-    let t: usize = lines.next().unwrap().unwrap().trim().parse().unwrap();
-    for _ in 0..t {
-        let n: i64 = lines.next().unwrap().unwrap().trim().parse().unwrap();
-        writeln!(out, "{}", n * n).unwrap();
-    }
-}`,
 };
 
-// Language metadata
 export const LANGUAGES = [
-  { id: 'cpp',        label: 'C++',        monacoId: 'cpp',        icon: '⚡' },
-  { id: 'c',          label: 'C',          monacoId: 'c',          icon: '🔧' },
-  { id: 'python',     label: 'Python',     monacoId: 'python',     icon: '🐍' },
-  { id: 'java',       label: 'Java',       monacoId: 'java',       icon: '☕' },
-  { id: 'javascript', label: 'JavaScript', monacoId: 'javascript', icon: '🟨' },
-  { id: 'typescript', label: 'TypeScript', monacoId: 'typescript', icon: '🔷' },
-  { id: 'go',         label: 'Go',         monacoId: 'go',         icon: '🐹' },
-  { id: 'rust',       label: 'Rust',       monacoId: 'rust',       icon: '🦀' },
+  { id: 'c',      label: 'C',       monacoId: 'c',      icon: '🔧' },
+  { id: 'python', label: 'Python',  monacoId: 'python', icon: '🐍' },
+  { id: 'java',   label: 'Java',    monacoId: 'java',   icon: '☕' },
 ];
+
+export const C_DEFAULT_SAMPLE = `#include <stdio.h>
+
+int main() {
+    int a, b;
+    a = 10;
+    b = a * 2 + 5;
+    printf("Result: %d\\n", b);
+    return 0;
+}`;
+
+export const TOKEN_COLORS = {
+  KEYWORD: '#c678dd',
+  IDENTIFIER: '#61afef',
+  CONSTANT: '#d19a66',
+  STRING_LITERAL: '#98c379',
+  CHAR_LITERAL: '#98c379',
+  OPERATOR: '#56b6c2',
+  DELIMITER: '#abb2bf',
+  PREPROCESSOR: '#e5c07b',
+  COMMENT: '#5c6370',
+  ERROR: '#e06c75',
+};
+
+export const DFA_TYPES = [
+  { id: 'identifier', label: 'Identifier DFA', pattern: 'Letter (Letter | Digit)*', example: 'x, count, _temp' },
+  { id: 'number',     label: 'Number DFA',     pattern: 'Digit+ (. Digit+)? (E [+-]? Digit+)?', example: '42, 3.14, 1e5' },
+  { id: 'operator',   label: 'Operator DFA',   pattern: 'One of: + - * / = < > ! & |', example: '+, -, *, /, ==, !=, &&' },
+  { id: 'keyword',    label: 'Keyword DFA',    pattern: 'Reserved words', example: 'int, if, else, while, return' },
+];
+
+export const SMART_LANG_DEFAULT = `// Mini-Language Demo
+let x: int = 10;
+let y: int = 20;
+let result: int;
+
+if (x < y) {
+    print(x);
+} else {
+    print(y);
+}
+
+while (x > 0) {
+    print(x);
+    x = x - 1;
+}
+
+result = x + y * 2;
+print(result);`;
